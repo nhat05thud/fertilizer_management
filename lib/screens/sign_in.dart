@@ -1,4 +1,6 @@
+import 'package:fertilizer_management/authentication/authentication_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -18,6 +20,10 @@ class _SignInState extends State<SignIn> {
     final windowSize = MediaQuery.of(context).size;
     final windowWidth = windowSize.width * 0.9;
     final windowHeight = windowSize.height;
+
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
       backgroundColor: Color(0xFFF3F8FE),
       body: SingleChildScrollView(
@@ -47,6 +53,7 @@ class _SignInState extends State<SignIn> {
                   height: windowHeight * 0.03,
                 ),
                 TextField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.black26,
@@ -69,6 +76,7 @@ class _SignInState extends State<SignIn> {
                   height: windowHeight * 0.03,
                 ),
                 TextField(
+                  controller: passwordController,
                   enableSuggestions: false,
                   autocorrect: false,
                   obscureText: !isShowPassword,
@@ -102,7 +110,11 @@ class _SignInState extends State<SignIn> {
                   height: windowHeight * 0.03,
                 ),
                 FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.read<AuthenticationService>().signIn(
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim());
+                  },
                   minWidth: windowWidth,
                   padding:
                       new EdgeInsets.symmetric(horizontal: 40, vertical: 20),
