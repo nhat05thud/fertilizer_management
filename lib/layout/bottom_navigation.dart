@@ -28,7 +28,7 @@ class BottomNavigation extends StatelessWidget {
                 onPressed: () {},
                 iconSize: 27.0,
                 icon: Icon(
-                  Icons.call_made,
+                  Icons.swap_horiz,
                   color: Colors.grey.shade400,
                 ),
               ),
@@ -40,7 +40,7 @@ class BottomNavigation extends StatelessWidget {
                 onPressed: () {},
                 iconSize: 27.0,
                 icon: Icon(
-                  Icons.call_received,
+                  Icons.shopping_cart,
                   color: Colors.grey.shade400,
                 ),
               ),
@@ -48,7 +48,7 @@ class BottomNavigation extends StatelessWidget {
                 onPressed: () {},
                 iconSize: 27.0,
                 icon: Icon(
-                  Icons.settings,
+                  Icons.person,
                   color: Colors.grey.shade400,
                 ),
               ),
