@@ -20,10 +20,8 @@ class _HomeWidgetState extends State<HomeWidget> {
           .centerDocked, //specify the location of the FAB
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print("click on floating button");
           addTransactionInterface();
         },
-        tooltip: "Centre FAB",
         child: Container(
           margin: EdgeInsets.all(15.0),
           child: Icon(Icons.add),

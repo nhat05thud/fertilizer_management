@@ -1,4 +1,7 @@
+import 'package:fertilizer_management/screens/add_transaction/choose_customer.dart';
+import 'package:fertilizer_management/screens/add_transaction/choose_product.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AddTransaction extends StatefulWidget {
   @override
@@ -6,7 +9,16 @@ class AddTransaction extends StatefulWidget {
 }
 
 class _AddTransactionState extends State<AddTransaction> {
-  String dropdownValue = "1";
+  String _customerName = "";
+
+  List<String> _listProductChoise = <String>[];
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +59,7 @@ class _AddTransactionState extends State<AddTransaction> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: GestureDetector(
                 onTap: () {
-                  print("tap to choose customer");
+                  _chooseCustomer(context);
                 },
                 child: Container(
                   padding: new EdgeInsets.only(left: 10, right: 10),
@@ -68,7 +80,7 @@ class _AddTransactionState extends State<AddTransaction> {
                       horizontalTitleGap: 10,
                       contentPadding: EdgeInsets.all(0),
                       title: Text(
-                        "Chọn người mua",
+                        _customerName == "" ? "Chọn người mua" : _customerName,
                         style: TextStyle(fontSize: 18),
                       ),
                     ),
@@ -89,49 +101,53 @@ class _AddTransactionState extends State<AddTransaction> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      print("add new transaction");
+                  ElevatedButton(
+                    onPressed: () {
+                      _chooseProducts(context);
                     },
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Row(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Icon(
-                              Icons.add,
-                              size: 15,
-                            ),
+                    child: Row(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Icon(
+                            Icons.add,
+                            size: 15,
                           ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 5),
-                            child: Text("Thêm mới"),
-                          ),
-                        ],
-                      ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 5),
+                          child: Text("Thêm mới"),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: ListView(
-                physics: BouncingScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                children: [
-                  newProduct(),
-                  newProduct(),
-                  newProduct(),
-                ],
-              ),
-            ),
+            _listProductChoise != null && _listProductChoise.length > 0
+                ? Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: _listProductChoise.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _newProduct(index);
+                      },
+                    ),
+                  )
+                : Center(
+                    child: Text(
+                      "Chưa chọn sản phẩm nào",
+                      style: TextStyle(
+                          fontStyle: FontStyle.italic, color: Colors.grey),
+                    ),
+                  ),
           ],
         ),
       ),
-      bottomSheet: Container(
+      bottomNavigationBar: Container(
         color: Colors.blue,
         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
         child: Row(
@@ -155,72 +171,88 @@ class _AddTransactionState extends State<AddTransaction> {
     );
   }
 
-  Widget newProduct() {
+  Widget _newProduct(index) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            flex: 9,
-            child: GestureDetector(
-              onTap: () {
-                print("tap to choose customer");
-              },
-              child: Container(
-                margin: EdgeInsets.only(right: 10),
-                padding: new EdgeInsets.only(left: 10, right: 10),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  border: Border.all(color: Colors.grey[200], width: 0),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: ListTile(
-                    leading: Container(
-                      child: Icon(
-                        Icons.eco,
-                      ),
-                      height: double.infinity,
-                    ),
-                    minLeadingWidth: 20,
-                    horizontalTitleGap: 10,
-                    contentPadding: EdgeInsets.all(0),
-                    title: Text(
-                      "Sản phẩm 1",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    subtitle: Text("Giá: 500.000 VNĐ / 1 sản phẩm"),
-                  ),
-                ),
-              ),
-            ),
+      margin: new EdgeInsets.only(bottom: 10),
+      child: Slidable(
+        actionPane: SlidableDrawerActionPane(),
+        actionExtentRatio: 0.2,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            border: Border.all(color: Colors.grey[200], width: 0),
           ),
-          Expanded(
-            flex: 2,
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 10, vertical: 26),
-                filled: true,
-                fillColor: Colors.grey[200],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(
-                    width: 0,
-                    style: BorderStyle.none,
-                  ),
-                ),
+          child: ListTile(
+            leading: Container(
+              child: Icon(
+                Icons.eco,
               ),
-              initialValue: "1",
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
+              height: double.infinity,
             ),
+            minLeadingWidth: 20,
+            horizontalTitleGap: 10,
+            contentPadding: EdgeInsets.all(0),
+            title: Text(
+              _listProductChoise[index],
+              style: TextStyle(fontSize: 18),
+            ),
+            subtitle: Text("Giá: 500.000 VNĐ / 1 sản phẩm"),
+            trailing: Text("Số lượng: 1"),
+          ),
+        ),
+        secondaryActions: <Widget>[
+          IconSlideAction(
+            caption: 'Chỉnh sửa',
+            color: Color(0xFF1389FD),
+            icon: Icons.settings,
+            onTap: () => {},
+          ),
+          IconSlideAction(
+            caption: 'Xóa',
+            color: Colors.red,
+            icon: Icons.delete,
+            onTap: () => {},
           ),
         ],
       ),
     );
+  }
+
+  _chooseCustomer(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => ChooseCustomer(name: _customerName)),
+    );
+
+    // After the Selection Screen returns a result, hide any previous snackbars
+    // and show the new result.
+    if (result != null) {
+      setState(() {
+        _customerName = result;
+      });
+    }
+  }
+
+  _chooseProducts(BuildContext context) async {
+    // Navigator.push returns a Future that completes after calling
+    // Navigator.pop on the Selection Screen.
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              ChooseProduct(listProductsChoise: _listProductChoise)),
+    );
+
+    // After the Selection Screen returns a result, hide any previous snackbars
+    // and show the new result.
+    if (result != null) {
+      setState(() {
+        _listProductChoise = result;
+      });
+    }
   }
 }
